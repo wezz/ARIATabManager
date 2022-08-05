@@ -45,7 +45,6 @@ export default class ARIATabManager {
     const controlElements = [].slice.call(
       document.querySelectorAll(this.controlselector)
     );
-    console.log("controlElements", controlElements);
     const newElements = controlElements.filter(
       (elm) => (elm as HTMLElement).dataset.tabmanager !== "activated"
     );
@@ -103,11 +102,11 @@ export default class ARIATabManager {
     const buttonTargets = await ariaManager.GetARIAControlTargets(button);
     const tabMode = parent.getAttribute(this.tabmodeattributename);
     const targetId = buttonTargets[0].id;
-    console.log("parent", parent);
+    
     const siblings = this.getTargets(parent).filter(
       (sibling: HTMLElement) => sibling.id !== targetId
     ) as HTMLElement[];
-    console.log("siblings", siblings);
+    
     siblings.forEach((sibling) => {
       ariaManager.AriaHidden(sibling, true);
       ariaManager.AriaExpand(sibling, false);
