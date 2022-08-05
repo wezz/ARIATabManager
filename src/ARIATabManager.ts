@@ -102,11 +102,11 @@ export default class ARIATabManager {
     const buttonTargets = await ariaManager.GetARIAControlTargets(button);
     const tabMode = parent.getAttribute(this.tabmodeattributename);
     const targetId = buttonTargets[0].id;
-    
+
     const siblings = this.getTargets(parent).filter(
       (sibling: HTMLElement) => sibling.id !== targetId
     ) as HTMLElement[];
-    
+
     siblings.forEach((sibling) => {
       ariaManager.AriaHidden(sibling, true);
       ariaManager.AriaExpand(sibling, false);
