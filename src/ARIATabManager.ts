@@ -70,6 +70,7 @@ export default class ARIATabManager {
   private setDefaultDelay(orgelm: HTMLElement) {
     const attributeValue = orgelm.getAttribute(this.controlselector);
     let delayValue = this.defaultDelay;
+
     if (typeof attributeValue === "string" && attributeValue.length > 0) {
       const intAttributeValue = parseInt(attributeValue, 10);
       if (!isNaN(intAttributeValue)) {
@@ -78,27 +79,20 @@ export default class ARIATabManager {
     }
     orgelm.dataset.tabanimationdelay = delayValue + "";
   }
+
   private bindEvents(orgelm: Element) {
     const elm = orgelm as HTMLElement;
-
     const buttons: HTMLElement[] = this.getButtons(elm);
-    const targets: HTMLElement[] = this.getTargets(elm);
+
     buttons.forEach((button) => {
       button.addEventListener(
         "beforeClick",
         this.onBeforeClick.bind(this, elm, button)
       );
     });
-    //targets.forEach((target) => {
-    //    target.addEventListener("aria-hidden-change", this.onAriaHiddenChange.bind(this, elm));
-    //});
   }
 
-  private async onBeforeClick(
-    parent: HTMLElement,
-    button: HTMLElement,
-    e: any
-  ) {
+  private async onBeforeClick(parent: HTMLElement, button: HTMLElement) {
     const buttonTargets = await ariaManager.GetARIAControlTargets(button);
     const tabMode = parent.getAttribute(this.tabmodeattributename);
     const targetId = buttonTargets[0].id;
@@ -119,6 +113,7 @@ export default class ARIATabManager {
     }
     this.displayTarget(buttonTargets[0], parent);
   }
+
   private setPageHash(button: HTMLElement) {
     if (button.hasAttribute("data-tab-href")) {
       const hashhref = button.getAttribute("data-tab-href");
