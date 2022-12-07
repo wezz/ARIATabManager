@@ -141,7 +141,7 @@ export default class ARIATabManager {
         buttons.forEach((button) => {
           const buttonParent = this.getTabContainer(button as HTMLElement);
           if (buttonParent) {
-            this.onBeforeClick(buttonParent, button as HTMLElement, null);
+            this.onBeforeClick(buttonParent, button as HTMLElement);
           }
         });
       }
