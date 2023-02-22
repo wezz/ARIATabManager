@@ -1,6 +1,6 @@
 /*!
  * 
- *   @wezz/ariatabmanager v0.0.4
+ *   @wezz/ariatabmanager v0.0.5
  *   https://github.com/wezz/ARIATabManager
  *
  *   Copyright (c) Wezz Balk (https://github.com/wezz)
