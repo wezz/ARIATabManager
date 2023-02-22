@@ -20,7 +20,7 @@ Example:
 using the attribute data-tab-selection-mode="allownone" will allow zero tabs to be open
 */
 import AriaManager from "@wezz/ariamanager";
-const ariaManager = new AriaManager();
+const ariaManager = new AriaManager(document.body);
 
 class SelectionMode {
   public static AllowNone: string = "allownone";
