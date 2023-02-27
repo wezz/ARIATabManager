@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vite + TS</title>
+  <script type="module" src="/src/main.ts"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+      max-width: 800px;
+    }
+
+    button {
+      cursor: pointer;
+      background: rgba(0, 0, 0, 0);
+      border: 3px solid #666;
+      border-radius: 3px;
+      padding: .5rem;
+      margin: 0 0 1rem;
+      transition: all .10s ease;
+    }
+
+    button:hover {
+      background: rgba(0, 0, 0, .1);
+      border-color: 999;
+    }
+
+    button[data-ariamanager="activated"] {
+      border-color: green;
+    }
+
+    [aria-hidden="true"] {
+      display: none;
+    }
+
+    .exampletarget {
+      border: 1px solid #ccc;
+      padding: 1rem;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="root">
+    <h1>ARIA Tab Manager Examples</h1>
+    <p>This page shows different examples of how the ARIA Tab Manager can be utilized.</p>
+  </div>
+
+
+  <div id="examples">
+    <section>
+      <h2>Example 1. Toggle a tabs</h2>
+      <!-- <button aria-controls="exampletarget1" aria-pressed="false">Open Example target 1</button>
+        <div id="exampletarget1" class="exampletarget" aria-hidden="true">
+          <strong>Example target 1 content</strong>
+        </div> -->
+      <div data-tab-container data-tab-selection-mode="allownone">
+        <button aria-controls="mycontent1" aria-pressed="false" data-tab-button>Tab 1</button>
+        <button aria-controls="mycontent2" aria-pressed="false" data-tab-button>Tab 2</button>
+
+        <div data-tab-contentcontainer>
+          <div id="mycontent1" aria-hidden="false" data-tab-content>Tab 1</div>
+          <div id="mycontent2" aria-hidden="true" data-tab-content>Tab 2</div>
+        </div>
+      </div>
+    </section>
+  </div>
+</body>
+
+</html>

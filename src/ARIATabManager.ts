@@ -19,8 +19,8 @@ Example:
 
 using the attribute data-tab-selection-mode="allownone" will allow zero tabs to be open
 */
-import AriaManager from "@wezz/ariamanager";
-const ariaManager = new AriaManager(document.body);
+import { ARIAManager } from "@wezz/ariamanager";
+const ariaManager = new ARIAManager(document.body);
 
 class SelectionMode {
   public static AllowNone: string = "allownone";
@@ -44,9 +44,9 @@ export default class ARIATabManager {
   public InitiateElements() {
     const controlElements = [].slice.call(
       document.querySelectorAll(this.controlselector)
-    );
+    ) as HTMLElement[];
     const newElements = controlElements.filter(
-      (elm) => (elm as HTMLElement).dataset.tabmanager !== "activated"
+      (elm) => elm.dataset.tabmanager !== "activated"
     );
     newElements.forEach(this.initiateElement.bind(this));
     newElements.forEach((elm) => (elm.dataset.tabmanager = "activated"));
@@ -155,7 +155,9 @@ export default class ARIATabManager {
       if (parent.hasAttribute("data-tab-container")) break;
       parent = parent.parentNode as HTMLElement; // get upper parent and check again
     }
-    if (parent.matches("body")) parent = null; // when parent is a tag 'body' -> parent not found
+    if (parent.matches("body")) {
+      return null;
+    }; // when parent is a tag 'body' -> parent not found
     return parent;
   }
 
@@ -181,11 +183,6 @@ export default class ARIATabManager {
   }
   private getButtons(elm: Element) {
     return [].slice.call(elm.querySelectorAll(this.buttonselector));
-  }
-  private customEvent(name: string, details: object) {
-    return new CustomEvent(name, {
-      detail: details,
-    });
   }
 
   private setContentHeight(elm: Element) {
