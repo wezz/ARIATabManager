@@ -7,7 +7,7 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/ariatabbmanager.js",
+      "import": "./dist/ariatabmanager.js",
       "require": "./dist/ariatabmanager.umd.cjs"
     }
   },
