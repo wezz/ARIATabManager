@@ -1,10 +1,11 @@
 export default class ARIATabManager {
     private controlelements;
-    private controlselector;
-    private contentselector;
-    private contentcontainerselector;
-    private buttonselector;
-    private tabmodeattributename;
+    private controlSelector;
+    private contentSelector;
+    private contentContainerSelector;
+    private buttonSelector;
+    private tabModeAttributeName;
+    private tabMediaQueryAttributeName;
     private defaultDelay;
     constructor();
     InitiateElements(): void;

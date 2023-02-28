@@ -1,10 +1,10 @@
 var u = Object.defineProperty;
-var g = (s, t, e) => t in s ? u(s, t, { enumerable: !0, configurable: !0, writable: !0, value: e }) : s[t] = e;
-var o = (s, t, e) => (g(s, typeof t != "symbol" ? t + "" : t, e), e);
-var b = Object.defineProperty, E = (s, t, e) => t in s ? b(s, t, { enumerable: !0, configurable: !0, writable: !0, value: e }) : s[t] = e, c = (s, t, e) => (E(s, typeof t != "symbol" ? t + "" : t, e), e);
+var b = (r, t, e) => t in r ? u(r, t, { enumerable: !0, configurable: !0, writable: !0, value: e }) : r[t] = e;
+var o = (r, t, e) => (b(r, typeof t != "symbol" ? t + "" : t, e), e);
+var g = Object.defineProperty, A = (r, t, e) => t in r ? g(r, t, { enumerable: !0, configurable: !0, writable: !0, value: e }) : r[t] = e, h = (r, t, e) => (A(r, typeof t != "symbol" ? t + "" : t, e), e);
 class f {
   constructor(t = document.body) {
-    c(this, "controlelements", []), c(this, "controlselector", "[aria-controls]:not([data-ariamanager-ignore])"), c(this, "delayAttribute", "data-ariamanager-delay"), this.InitiateElements(t), window.addEventListener("global-markupchange", (e) => {
+    h(this, "controlelements", []), h(this, "controlselector", "[aria-controls]:not([data-ariamanager-ignore])"), h(this, "delayAttribute", "data-ariamanager-delay"), this.InitiateElements(t), window.addEventListener("global-markupchange", (e) => {
       var a;
       this.InitiateElements(((a = e == null ? void 0 : e.detail) == null ? void 0 : a.target) ?? document);
     });
@@ -45,11 +45,11 @@ class f {
   GetARIAControlTargets(t) {
     const e = (t.getAttribute("aria-controls") + "").split(
       " "
-    ), a = [], n = (i, r) => i.indexOf(r) === 0;
-    return e.forEach((i) => {
-      i = (!n(i, "#") && !n(i, ".") ? "#" : "") + i;
-      const r = document.querySelector(i);
-      r && a.push(r);
+    ), a = [], i = (n, s) => n.indexOf(s) === 0;
+    return e.forEach((n) => {
+      n = (!i(n, "#") && !i(n, ".") ? "#" : "") + n;
+      const s = document.querySelector(n);
+      s && a.push(s);
     }), a;
   }
   onButtonClick(t) {
@@ -89,18 +89,18 @@ class f {
     );
   }
   updateButtonState(t, e) {
-    const a = (r, l) => r.hasAttribute(l) ? r.getAttribute(l) : null, n = e.detail.target, i = a(n, "aria-hidden");
-    t.hasAttribute("aria-pressed") && t.setAttribute("aria-pressed", (i === "false") + ""), t.hasAttribute("aria-expanded") && t.setAttribute("aria-expanded", (i === "false") + "");
+    const a = (s, d) => s.hasAttribute(d) ? s.getAttribute(d) : null, i = e.detail.target, n = a(i, "aria-hidden");
+    t.hasAttribute("aria-pressed") && t.setAttribute("aria-pressed", (n === "false") + ""), t.hasAttribute("aria-expanded") && t.setAttribute("aria-expanded", (n === "false") + "");
   }
   setAriaHidden(t) {
-    const e = t.detail.target, a = t.detail.value, n = this.GetARIAControllerFromTarget(e);
+    const e = t.detail.target, a = t.detail.value, i = this.GetARIAControllerFromTarget(e);
     e.setAttribute("aria-hidden", a), e.dispatchEvent(
       this.customEvent("aria-hidden-change", {
         target: e,
         value: a
       })
-    ), n.forEach((i) => {
-      i.dispatchEvent(
+    ), i.forEach((n) => {
+      n.dispatchEvent(
         this.customEvent("updateButtonState", {
           target: e
         })
@@ -108,14 +108,14 @@ class f {
     });
   }
   setAriaExpanded(t) {
-    const e = t.detail.target, a = t.detail.value, n = this.GetARIAControllerFromTarget(e);
+    const e = t.detail.target, a = t.detail.value, i = this.GetARIAControllerFromTarget(e);
     e.hasAttribute("data-aria-expanded") && e.setAttribute("data-aria-expanded", a + ""), e.dispatchEvent(
       this.customEvent("aria-expanded-change", {
         target: e,
         value: a
       })
-    ), n.forEach((i) => {
-      i.dispatchEvent(
+    ), i.forEach((n) => {
+      n.dispatchEvent(
         this.customEvent("updateButtonState", {
           target: e
         })
@@ -127,12 +127,12 @@ class f {
   adjustTargetStates(t, e) {
     this.GetARIAControlTargets(t).forEach((a) => {
       if (a.hasAttribute("aria-hidden")) {
-        const n = a.getAttribute("aria-hidden") === "true";
-        this.AriaHidden(a, !n);
+        const i = a.getAttribute("aria-hidden") === "true";
+        this.AriaHidden(a, !i);
       }
       if (t.hasAttribute("aria-expanded") || a.hasAttribute("data-aria-expanded")) {
-        const n = a.getAttribute("aria-hidden") === "true";
-        this.AriaExpand(a, !n);
+        const i = a.getAttribute("aria-hidden") === "true";
+        this.AriaExpand(a, !i);
       }
     });
   }
@@ -140,8 +140,8 @@ class f {
     let e = 0;
     const a = t.getAttribute(this.delayAttribute);
     if (typeof a == "string" && a.length > 0) {
-      const n = parseInt(a, 10);
-      isNaN(n) || (e = n);
+      const i = parseInt(a, 10);
+      isNaN(i) || (e = i);
     }
     return e;
   }
@@ -151,24 +151,25 @@ class f {
     });
   }
 }
-const d = new f(document.body);
-class h {
+const l = new f(document.body);
+class c {
 }
-o(h, "AllowNone", "allownone"), o(h, "Default", "");
+o(c, "AllowNone", "allownone"), o(c, "TabletAccordion", "tabletaccordion"), o(c, "Default", "");
 class m {
   constructor() {
     o(this, "controlelements", []);
-    o(this, "controlselector", "[data-tab-container]");
-    o(this, "contentselector", "[data-tab-content]");
-    o(this, "contentcontainerselector", "[data-tab-contentcontainer]");
-    o(this, "buttonselector", "[data-tab-button]");
-    o(this, "tabmodeattributename", "data-tab-selection-mode");
+    o(this, "controlSelector", "[data-tab-container]");
+    o(this, "contentSelector", "[data-tab-content]");
+    o(this, "contentContainerSelector", "[data-tab-contentcontainer]");
+    o(this, "buttonSelector", "[data-tab-button]");
+    o(this, "tabModeAttributeName", "data-tab-selection-mode");
+    o(this, "tabMediaQueryAttributeName", "data-tab-mediaquery");
     o(this, "defaultDelay", 0);
     this.InitiateElements(), this.checkPageHash();
   }
   InitiateElements() {
     const e = [].slice.call(
-      document.querySelectorAll(this.controlselector)
+      document.querySelectorAll(this.controlSelector)
     ).filter(
       (a) => a.dataset.tabmanager !== "activated"
     );
@@ -183,30 +184,35 @@ class m {
     }, 1e3)), this.bindEvents(t);
   }
   setDefaultDelay(t) {
-    const e = t.getAttribute(this.controlselector);
+    const e = t.getAttribute(this.controlSelector);
     let a = this.defaultDelay;
     if (typeof e == "string" && e.length > 0) {
-      const n = parseInt(e, 10);
-      isNaN(n) || (a = n);
+      const i = parseInt(e, 10);
+      isNaN(i) || (a = i);
     }
     t.dataset.tabanimationdelay = a + "";
   }
   bindEvents(t) {
     const e = t;
-    this.getButtons(e).forEach((n) => {
-      n.addEventListener(
+    this.getButtons(e).forEach((i) => {
+      i.addEventListener(
         "beforeClick",
-        this.onBeforeClick.bind(this, e, n)
+        this.onBeforeClick.bind(this, e, i)
       );
     });
   }
   async onBeforeClick(t, e) {
-    const a = await d.GetARIAControlTargets(e), n = t.getAttribute(this.tabmodeattributename), i = a[0].id;
+    const a = await l.GetARIAControlTargets(e), i = t.getAttribute(this.tabModeAttributeName), n = a[0].id;
+    if (i === c.TabletAccordion) {
+      const d = t.hasAttribute(this.tabMediaQueryAttributeName) ? t.getAttribute(this.tabMediaQueryAttributeName) + "" : "only screen and (min-width: 768px)";
+      if (typeof (window == null ? void 0 : window.matchMedia) < "u" && !window.matchMedia(d).matches)
+        return;
+    }
     this.getTargets(t).filter(
-      (l) => l.id !== i
-    ).forEach((l) => {
-      d.AriaHidden(l, !0), d.AriaExpand(l, !1);
-    }), this.setPageHash(e), this.setContentHeight(t), n !== h.AllowNone && this.displayTarget(a[0], t);
+      (d) => d.id !== n
+    ).forEach((d) => {
+      l.AriaHidden(d, !0), l.AriaExpand(d, !1);
+    }), this.setPageHash(e), this.setContentHeight(t), i !== c.AllowNone && this.displayTarget(a[0], t);
   }
   setPageHash(t) {
     if (t.hasAttribute("data-tab-href")) {
@@ -222,9 +228,9 @@ class m {
       const a = Array.from(
         document.querySelectorAll('[data-tab-href="' + e + '"]')
       );
-      a && a.length > 0 && a.forEach((n) => {
-        const i = this.getTabContainer(n);
-        i && this.onBeforeClick(i, n);
+      a && a.length > 0 && a.forEach((i) => {
+        const n = this.getTabContainer(i);
+        n && this.onBeforeClick(n, i);
       });
     });
   }
@@ -236,29 +242,29 @@ class m {
   }
   displayTarget(t, e, a = 180) {
     window.setTimeout(() => {
-      const n = this.getTargets(e);
-      n.filter(
-        (r) => r.getAttribute("aria-hidden") === "true"
-      ).length === n.length && (d.AriaHidden(t, !1), d.AriaExpand(t, !0));
+      const i = this.getTargets(e);
+      i.filter(
+        (s) => s.getAttribute("aria-hidden") === "true"
+      ).length === i.length && (l.AriaHidden(t, !1), l.AriaExpand(t, !0));
     }, a);
   }
   getTargets(t) {
-    return [].slice.call(t.querySelectorAll(this.contentselector));
+    return [].slice.call(t.querySelectorAll(this.contentSelector));
   }
   getButtons(t) {
-    return [].slice.call(t.querySelectorAll(this.buttonselector));
+    return [].slice.call(t.querySelectorAll(this.buttonSelector));
   }
   setContentHeight(t) {
-    const e = t.querySelector(this.contentcontainerselector);
+    const e = t.querySelector(this.contentContainerSelector);
     if (e && t.getAttribute("data-tab-setheight") === "true") {
       const a = this.getTargets(t);
-      let n = 0;
-      if (a.forEach((i) => {
-        const r = i.getClientRects()[0];
-        r && r.height > n && (n = r.height);
-      }), n > 0) {
-        const i = "height:" + n + "px";
-        e.setAttribute("style", i);
+      let i = 0;
+      if (console.log("targets", a), a.forEach((n) => {
+        const s = n.getClientRects()[0];
+        s && s.height > i && (i = s.height);
+      }), i > 0) {
+        const n = "height:" + i + "px";
+        e.setAttribute("style", n);
       }
     }
   }
