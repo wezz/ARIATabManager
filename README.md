@@ -12,8 +12,8 @@ npm install @wezz/ariatabmanager
 ## Usage
 ### Initialize ARIA Manager & ARIA Tab Manager
 ```
-import ARIAManager from "@wezz/ariamanager";
-import ARIATabManager from "@wezz/ariatabmanager";
+import { ARIAManager } from "@wezz/ariamanager";
+import { ARIATabManager } from "@wezz/ariatabmanager";
 // On document ready
 new ARIAManager();
 new ARIATabManager();
@@ -21,29 +21,21 @@ new ARIATabManager();
 
 ### Tab markup example
 ```
-<div data-tab-container>  
-  <button
-      aria-controls="mycontent1"
-      aria-pressed="false"
-      data-tab-button>Tab 1</button>
-  <button
-      aria-controls="mycontent2"
-      aria-pressed="false"
-      data-tab-button>Tab 2</button>
-  
-  <div data-tab-contentcontainer>
-      <div
-      id="mycontent1"
-      aria-hidden="false"
-      data-tab-content>Tab 1</div>
-      <div
-      id="mycontent2"
-      aria-hidden="true"
-      data-tab-content>Tab 2</div>
-  </div>
+<div data-tab-container>
+    <button aria-controls="mycontent1" aria-pressed="false" data-tab-button>Tab 1</button>
+    <button aria-controls="mycontent2" aria-pressed="false" data-tab-button>Tab 2</button>
+
+    <div data-tab-contentcontainer>
+        <div id="mycontent1" aria-hidden="false" data-tab-content>Tab 1</div>
+        <div id="mycontent2" aria-hidden="true" data-tab-content>Tab 2</div>
+    </div>
 </div>
 ```
 
+## Optional behavior
+There is a additional parameter **data-tab-selection-mode** which will allow users to close all tabs.
+
+```<div data-tab-container data-tab-selection-mode="allownone">...</div>```
 
 
 ## Development & Demo
@@ -51,5 +43,5 @@ Clone this repo
 Run
 ``` npm install ```
 
-To run the interactive demo, run 
-``` npm run demo ```
+To run the demo, run
+``` npm run dev ```

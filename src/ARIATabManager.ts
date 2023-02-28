@@ -24,16 +24,18 @@ const ariaManager = new ARIAManager(document.body);
 
 class SelectionMode {
   public static AllowNone: string = "allownone";
+  public static TabletAccordion: string = "tabletaccordion";
   public static Default: string = "";
 }
 
 export default class ARIATabManager {
   private controlelements: HTMLElement[] = [];
-  private controlselector = "[data-tab-container]";
-  private contentselector = "[data-tab-content]";
-  private contentcontainerselector = "[data-tab-contentcontainer]";
-  private buttonselector = "[data-tab-button]";
-  private tabmodeattributename = "data-tab-selection-mode";
+  private controlSelector = "[data-tab-container]";
+  private contentSelector = "[data-tab-content]";
+  private contentContainerSelector = "[data-tab-contentcontainer]";
+  private buttonSelector = "[data-tab-button]";
+  private tabModeAttributeName = "data-tab-selection-mode";
+  private tabMediaQueryAttributeName = "data-tab-mediaquery";
 
   private defaultDelay = 0;
   constructor() {
@@ -43,7 +45,7 @@ export default class ARIATabManager {
 
   public InitiateElements() {
     const controlElements = [].slice.call(
-      document.querySelectorAll(this.controlselector)
+      document.querySelectorAll(this.controlSelector)
     ) as HTMLElement[];
     const newElements = controlElements.filter(
       (elm) => elm.dataset.tabmanager !== "activated"
@@ -68,7 +70,7 @@ export default class ARIATabManager {
   }
 
   private setDefaultDelay(orgelm: HTMLElement) {
-    const attributeValue = orgelm.getAttribute(this.controlselector);
+    const attributeValue = orgelm.getAttribute(this.controlSelector);
     let delayValue = this.defaultDelay;
 
     if (typeof attributeValue === "string" && attributeValue.length > 0) {
@@ -94,8 +96,21 @@ export default class ARIATabManager {
 
   private async onBeforeClick(parent: HTMLElement, button: HTMLElement) {
     const buttonTargets = await ariaManager.GetARIAControlTargets(button);
-    const tabMode = parent.getAttribute(this.tabmodeattributename);
+    const tabMode = parent.getAttribute(this.tabModeAttributeName);
     const targetId = buttonTargets[0].id;
+    if (tabMode === SelectionMode.TabletAccordion) {
+      const mediaQuery = (parent.hasAttribute(this.tabMediaQueryAttributeName)) ? (parent.getAttribute(this.tabMediaQueryAttributeName)+'') : 'only screen and (min-width: 768px)';
+      if (typeof window?.matchMedia !== "undefined") {
+        if (!window.matchMedia(mediaQuery).matches) {
+          // If the media query matches we will not add the behavior for tabbing.
+          // Instead we default to the standard ARIA Manager behavior
+          // console.log('disabled tab manager behavior since the mediaQuery does not match')
+          return;
+        }
+      }
+      
+    }
+    
 
     const siblings = this.getTargets(parent).filter(
       (sibling: HTMLElement) => sibling.id !== targetId
@@ -179,17 +194,18 @@ export default class ARIATabManager {
   }
 
   private getTargets(elm: Element) {
-    return [].slice.call(elm.querySelectorAll(this.contentselector));
+    return [].slice.call(elm.querySelectorAll(this.contentSelector));
   }
   private getButtons(elm: Element) {
-    return [].slice.call(elm.querySelectorAll(this.buttonselector));
+    return [].slice.call(elm.querySelectorAll(this.buttonSelector));
   }
 
   private setContentHeight(elm: Element) {
-    const contentContainer = elm.querySelector(this.contentcontainerselector);
+    const contentContainer = elm.querySelector(this.contentContainerSelector);
     if (contentContainer && elm.getAttribute("data-tab-setheight") === "true") {
       const targets = this.getTargets(elm);
       let largestheight = 0;
+      console.log('targets', targets)
       targets.forEach((target: Element) => {
         const targetRect = target.getClientRects()[0];
         if (targetRect && targetRect.height > largestheight) {

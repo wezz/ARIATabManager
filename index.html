@@ -27,11 +27,16 @@
 
     button:hover {
       background: rgba(0, 0, 0, .1);
-      border-color: 999;
+      border-color: #999;
     }
 
     button[data-ariamanager="activated"] {
       border-color: green;
+    }
+
+    button[aria-pressed="true"] {
+      background: rgba(0, 0, 0, .4);
+
     }
 
     [aria-hidden="true"] {
@@ -41,6 +46,75 @@
     .exampletarget {
       border: 1px solid #ccc;
       padding: 1rem;
+    }
+
+    .example3 button {
+      display: block;
+    }
+
+    .example3 [data-tab-container] {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .example4 [data-tab-container] {
+      border:2px solid #ccc;
+      padding:10px;
+    }
+    .example4 [data-tab-contentcontainer] {
+      transition: height .5s linear;
+      overflow: hidden;
+      position: relative;
+    }
+    .example4 button {
+      margin:0;
+    }
+    .example4 [aria-hidden] {
+      transition:opacity .7s ease;
+      transition-delay: .1s;
+      overflow: hidden;
+      position: absolute;
+      top:0;
+    }
+    .example4 [aria-hidden="true"] {
+      display: block;
+      opacity:0;
+    }
+    .example4 [aria-hidden="false"] {
+      display: block;
+      opacity:1;
+    }
+
+    .example5 [data-tab-container] {
+      display: flex;
+      flex-direction: column;
+    }
+    .example5 button {
+      display: flex;
+      font-size: 1.6rem;
+      font-weight: bold;
+      white-space: nowrap;
+      padding: 0 1.5rem
+    }
+
+    .example5 [data-tab-content] {
+      width:100%;
+    }
+
+    @media only screen and (min-width: 768px) {
+      .example5 [data-tab-container] {
+        width: 100%;
+        flex-direction: row;
+        flex-wrap: wrap;
+        position: relative;
+      }
+      .example5 button {
+        flex-grow: 1;
+      }
+
+      .example5 [data-tab-content] {
+        order: 2;
+      }
     }
   </style>
 </head>
@@ -54,19 +128,88 @@
 
   <div id="examples">
     <section>
-      <h2>Example 1. Toggle a tabs</h2>
-      <!-- <button aria-controls="exampletarget1" aria-pressed="false">Open Example target 1</button>
-        <div id="exampletarget1" class="exampletarget" aria-hidden="true">
-          <strong>Example target 1 content</strong>
-        </div> -->
-      <div data-tab-container data-tab-selection-mode="allownone">
-        <button aria-controls="mycontent1" aria-pressed="false" data-tab-button>Tab 1</button>
-        <button aria-controls="mycontent2" aria-pressed="false" data-tab-button>Tab 2</button>
+      <h2>Example 1. Toggle tabs</h2>
+      <div data-tab-container>
+        <button aria-controls="example1-mycontent1" aria-pressed="true" data-tab-button>Tab 1</button>
+        <button aria-controls="example1-mycontent2" aria-pressed="false" data-tab-button>Tab 2</button>
 
         <div data-tab-contentcontainer>
-          <div id="mycontent1" aria-hidden="false" data-tab-content>Tab 1</div>
-          <div id="mycontent2" aria-hidden="true" data-tab-content>Tab 2</div>
+          <div id="example1-mycontent1" aria-hidden="false" data-tab-content>Tab 1</div>
+          <div id="example1-mycontent2" aria-hidden="true" data-tab-content>Tab 2</div>
         </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Example 2. Allow all tabs to close</h2>
+      <div data-tab-container data-tab-selection-mode="allownone">
+        <button aria-controls="example2-mycontent1" aria-pressed="true" data-tab-button>Tab 1</button>
+        <button aria-controls="example2-mycontent2" aria-pressed="false" data-tab-button>Tab 2</button>
+
+        <div data-tab-contentcontainer>
+          <div id="example2-mycontent1" aria-hidden="false" data-tab-content>Tab 1</div>
+          <div id="example2-mycontent2" aria-hidden="true" data-tab-content>Tab 2</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="example3">
+      <h2>Example 3. Accordion style markup</h2>
+      <div data-tab-container data-tab-contentcontainer data-tab-selection-mode="allownone">
+        <button aria-controls="example3-mycontent1" aria-pressed="true" data-tab-button>Tab 1</button>
+        <div id="example3-mycontent1" aria-hidden="false" data-tab-content>Tab 1</div>
+
+        <button aria-controls="example3-mycontent2" aria-pressed="false" data-tab-button>Tab 2</button>
+        <div id="example3-mycontent2" aria-hidden="true" data-tab-content>Tab 2</div>
+
+        <button aria-controls="example3-mycontent3" aria-pressed="false" data-tab-button>Tab 3</button>
+        <div id="example3-mycontent3" aria-hidden="true" data-tab-content>Tab 3</div>
+      </div>
+    </section>
+
+    <section class="example4">
+      <h2>Example 4. Set height attribute to container</h2>
+      <p>This example shows the content container keeping the height to be able to display the largest tab without jumping the page</p>
+      <div data-tab-container data-tab-setheight="true">
+        <button aria-controls="example4-mycontent1" aria-pressed="true" data-tab-button>Tab 1</button>
+        <button aria-controls="example4-mycontent2" aria-pressed="false" data-tab-button>Tab 2</button>
+
+        <div data-tab-contentcontainer>
+          <div id="example4-mycontent1" aria-hidden="false" data-tab-content>
+            <h2>Tab 1</h2>
+            <p>Sunt ratione tenetur consequuntur. Fuga quo porro id nihil sunt asperiores qui. Ipsa labore est iusto
+              minus rerum doloremque. Velit dolor ab placeat eum quia hic aut debitis.</p>
+
+            <p>At ut quis qui et sunt. Est quaerat est incidunt molestias dolore dignissimos quae perspiciatis. Ex
+              numquam iste quia. Omnis quia quis sapiente praesentium eligendi illo hic dolor. Magni molestias neque
+              molestiae consequuntur recusandae dignissimos enim.</p>
+          </div>
+          <div id="example4-mycontent2" aria-hidden="true" data-tab-content>
+            <h2>Tab 2</h2>
+            <p>Voluptatem excepturi nemo nihil et eligendi. Aspernatur soluta debitis adipisci quae non. Numquam
+              quibusdam veniam omnis in dignissimos ea. Magnam ipsam molestiae ea nesciunt delectus.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <section class="example5">
+      <h2>Example 5. Desktop tabs, tablet accordion</h2>
+      <p>This example will use tabs on desktop, but in tablet mode (or custom mediaquery) we allow all accordion content to show at the same time.</p>
+      <div 
+        data-tab-container 
+        data-tab-contentcontainer 
+        data-tab-selection-mode="tabletaccordion" 
+        data-tab-mediaquery="only screen and (min-width: 768px)">
+        <button aria-controls="example5-mycontent1" aria-pressed="false" data-tab-button>Tab 1</button>
+        <div id="example5-mycontent1" aria-hidden="false" data-tab-content>Tab 1</div>
+
+        <button aria-controls="example5-mycontent2" aria-pressed="false" data-tab-button>Tab 2</button>
+        <div id="example5-mycontent2" aria-hidden="true" data-tab-content>Tab 2</div>
+
+        <button aria-controls="example5-mycontent3" aria-pressed="false" data-tab-button>Tab 3</button>
+        <div id="example5-mycontent3" aria-hidden="true" data-tab-content>Tab 3</div>
       </div>
     </section>
   </div>
