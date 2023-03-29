@@ -20,7 +20,6 @@ Example:
 using the attribute data-tab-selection-mode="allownone" will allow zero tabs to be open
 */
 import { ARIAManager } from "@wezz/ariamanager";
-const ariaManager = new ARIAManager(document.body);
 
 class SelectionMode {
   public static AllowNone: string = "allownone";
@@ -36,16 +35,28 @@ export default class ARIATabManager {
   private buttonSelector = "[data-tab-button]";
   private tabModeAttributeName = "data-tab-selection-mode";
   private tabMediaQueryAttributeName = "data-tab-mediaquery";
-
+  private ariaManager : ARIAManager;
   private defaultDelay = 0;
-  constructor() {
-    this.InitiateElements();
+  constructor(options?: ARIATabManagerInitiationOptions) {
+    const constructorOptions = this.parseOptions(options);
+    this.ariaManager = new ARIAManager(options);
+    if (constructorOptions.initiateElements) {
+      this.InitiateElements(constructorOptions.parent);
+    }
+    
     this.checkPageHash();
   }
+  private parseOptions(options?: ARIATabManagerInitiationOptions) {
+    const defaultOptions = { parent: document.body, initiateElements: true };
+    if (!options || typeof options !== "object" || (typeof options.parent === "undefined" && typeof options.initiateElements === "undefined")) {
+      return defaultOptions;
+    }
+    return {...defaultOptions, ...options};
+  }
 
-  public InitiateElements() {
+  public InitiateElements(parent : HTMLElement = document.body) {
     const controlElements = [].slice.call(
-      document.querySelectorAll(this.controlSelector)
+      parent.querySelectorAll(this.controlSelector)
     ) as HTMLElement[];
     const newElements = controlElements.filter(
       (elm) => elm.dataset.tabmanager !== "activated"
@@ -95,7 +106,7 @@ export default class ARIATabManager {
   }
 
   private async onBeforeClick(parent: HTMLElement, button: HTMLElement) {
-    const buttonTargets = await ariaManager.GetARIAControlTargets(button);
+    const buttonTargets = await this.ariaManager.GetARIAControlTargets(button);
     const tabMode = parent.getAttribute(this.tabModeAttributeName);
     const targetId = buttonTargets[0].id;
     if (tabMode === SelectionMode.TabletAccordion) {
@@ -117,8 +128,8 @@ export default class ARIATabManager {
     ) as HTMLElement[];
 
     siblings.forEach((sibling) => {
-      ariaManager.AriaHidden(sibling, true);
-      ariaManager.AriaExpand(sibling, false);
+      this.ariaManager.AriaHidden(sibling, true);
+      this.ariaManager.AriaExpand(sibling, false);
     });
     this.setPageHash(button);
     this.setContentHeight(parent);
@@ -187,8 +198,8 @@ export default class ARIATabManager {
         (target: HTMLElement) => target.getAttribute("aria-hidden") === "true"
       ) as HTMLElement[];
       if (hiddenTargets.length === targets.length) {
-        ariaManager.AriaHidden(buttonTarget, false);
-        ariaManager.AriaExpand(buttonTarget, true);
+        this.ariaManager.AriaHidden(buttonTarget, false);
+        this.ariaManager.AriaExpand(buttonTarget, true);
       }
     }, delayInMilliseconds);
   }
@@ -218,4 +229,9 @@ export default class ARIATabManager {
       }
     }
   }
+}
+
+interface ARIATabManagerInitiationOptions {
+  parent?: HTMLElement;
+  initiateElements?: Boolean;
 }

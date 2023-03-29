@@ -1,6 +1,6 @@
 {
   "name": "@wezz/ariatabmanager",
-  "version": "0.1.4",
+  "version": "1.0.0",
   "type": "module",
   "main": "./dist/ariatabmanager.umd.cjs",
   "module": "./dist/ariatabmanager.js",
@@ -43,6 +43,6 @@
     "vite-plugin-dts": "^2.0.2"
   },
   "dependencies": {
-    "@wezz/ariamanager": "^0.1.5"
+    "@wezz/ariamanager": "^1.0.1"
   }
 }

@@ -19,6 +19,17 @@ new ARIAManager();
 new ARIATabManager();
 ```
 
+#### Initiation options
+The constructor can take the following options object:
+```
+const ariaOptions = { 
+    parent: document.body, // This defined the entrypoint where ARIA Manager will query for relevant elements
+    initiateElements: true // This disables the automatic initiation
+};
+new ARIAManager(ariaOptions);
+new ARIATabManager(ariaOptions);
+```
+
 ### Tab markup example
 ```
 <div data-tab-container>

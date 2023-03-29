@@ -6,9 +6,11 @@ export default class ARIATabManager {
     private buttonSelector;
     private tabModeAttributeName;
     private tabMediaQueryAttributeName;
+    private ariaManager;
     private defaultDelay;
-    constructor();
-    InitiateElements(): void;
+    constructor(options?: ARIATabManagerInitiationOptions);
+    private parseOptions;
+    InitiateElements(parent?: HTMLElement): void;
     private initiateElement;
     private setDefaultDelay;
     private bindEvents;
@@ -21,3 +23,8 @@ export default class ARIATabManager {
     private getButtons;
     private setContentHeight;
 }
+interface ARIATabManagerInitiationOptions {
+    parent?: HTMLElement;
+    initiateElements?: Boolean;
+}
+export {};

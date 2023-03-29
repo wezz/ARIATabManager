@@ -1,13 +1,19 @@
-var u = Object.defineProperty;
-var b = (r, t, e) => t in r ? u(r, t, { enumerable: !0, configurable: !0, writable: !0, value: e }) : r[t] = e;
-var o = (r, t, e) => (b(r, typeof t != "symbol" ? t + "" : t, e), e);
-var g = Object.defineProperty, A = (r, t, e) => t in r ? g(r, t, { enumerable: !0, configurable: !0, writable: !0, value: e }) : r[t] = e, h = (r, t, e) => (A(r, typeof t != "symbol" ? t + "" : t, e), e);
+var h = Object.defineProperty;
+var u = (r, t, e) => t in r ? h(r, t, { enumerable: !0, configurable: !0, writable: !0, value: e }) : r[t] = e;
+var o = (r, t, e) => (u(r, typeof t != "symbol" ? t + "" : t, e), e);
+var b = Object.defineProperty, g = (r, t, e) => t in r ? b(r, t, { enumerable: !0, configurable: !0, writable: !0, value: e }) : r[t] = e, c = (r, t, e) => (g(r, typeof t != "symbol" ? t + "" : t, e), e);
 class f {
-  constructor(t = document.body) {
-    h(this, "controlelements", []), h(this, "controlselector", "[aria-controls]:not([data-ariamanager-ignore])"), h(this, "delayAttribute", "data-ariamanager-delay"), this.InitiateElements(t), window.addEventListener("global-markupchange", (e) => {
-      var a;
-      this.InitiateElements(((a = e == null ? void 0 : e.detail) == null ? void 0 : a.target) ?? document);
-    });
+  constructor(t) {
+    c(this, "controlelements", []), c(this, "controlselector", "[aria-controls]:not([data-ariamanager-ignore])"), c(this, "delayAttribute", "data-ariamanager-delay");
+    const e = this.parseOptions(t);
+    e.initiateElements && (this.InitiateElements(e.parent), window.addEventListener("global-markupchange", (a) => {
+      var i;
+      this.InitiateElements(((i = a == null ? void 0 : a.detail) == null ? void 0 : i.target) ?? document);
+    }));
+  }
+  parseOptions(t) {
+    const e = { parent: document.body, initiateElements: !0 };
+    return !t || typeof t != "object" || typeof t.parent > "u" && typeof t.initiateElements > "u" ? e : { ...e, ...t };
   }
   InitiateElements(t = document.body) {
     const e = [].slice.call(
@@ -151,12 +157,11 @@ class f {
     });
   }
 }
-const l = new f(document.body);
-class c {
+class l {
 }
-o(c, "AllowNone", "allownone"), o(c, "TabletAccordion", "tabletaccordion"), o(c, "Default", "");
-class m {
-  constructor() {
+o(l, "AllowNone", "allownone"), o(l, "TabletAccordion", "tabletaccordion"), o(l, "Default", "");
+class A {
+  constructor(t) {
     o(this, "controlelements", []);
     o(this, "controlSelector", "[data-tab-container]");
     o(this, "contentSelector", "[data-tab-content]");
@@ -164,18 +169,24 @@ class m {
     o(this, "buttonSelector", "[data-tab-button]");
     o(this, "tabModeAttributeName", "data-tab-selection-mode");
     o(this, "tabMediaQueryAttributeName", "data-tab-mediaquery");
+    o(this, "ariaManager");
     o(this, "defaultDelay", 0);
-    this.InitiateElements(), this.checkPageHash();
+    const e = this.parseOptions(t);
+    this.ariaManager = new f(t), e.initiateElements && this.InitiateElements(e.parent), this.checkPageHash();
   }
-  InitiateElements() {
-    const e = [].slice.call(
-      document.querySelectorAll(this.controlSelector)
+  parseOptions(t) {
+    const e = { parent: document.body, initiateElements: !0 };
+    return !t || typeof t != "object" || typeof t.parent > "u" && typeof t.initiateElements > "u" ? e : { ...e, ...t };
+  }
+  InitiateElements(t = document.body) {
+    const a = [].slice.call(
+      t.querySelectorAll(this.controlSelector)
     ).filter(
-      (a) => a.dataset.tabmanager !== "activated"
+      (i) => i.dataset.tabmanager !== "activated"
     );
-    e.forEach(this.initiateElement.bind(this)), e.forEach((a) => a.dataset.tabmanager = "activated"), this.controlelements = [].concat(
+    a.forEach(this.initiateElement.bind(this)), a.forEach((i) => i.dataset.tabmanager = "activated"), this.controlelements = [].concat(
       this.controlelements,
-      e
+      a
     );
   }
   initiateElement(t) {
@@ -202,8 +213,8 @@ class m {
     });
   }
   async onBeforeClick(t, e) {
-    const a = await l.GetARIAControlTargets(e), i = t.getAttribute(this.tabModeAttributeName), n = a[0].id;
-    if (i === c.TabletAccordion) {
+    const a = await this.ariaManager.GetARIAControlTargets(e), i = t.getAttribute(this.tabModeAttributeName), n = a[0].id;
+    if (i === l.TabletAccordion) {
       const d = t.hasAttribute(this.tabMediaQueryAttributeName) ? t.getAttribute(this.tabMediaQueryAttributeName) + "" : "only screen and (min-width: 768px)";
       if (typeof (window == null ? void 0 : window.matchMedia) < "u" && !window.matchMedia(d).matches)
         return;
@@ -211,8 +222,8 @@ class m {
     this.getTargets(t).filter(
       (d) => d.id !== n
     ).forEach((d) => {
-      l.AriaHidden(d, !0), l.AriaExpand(d, !1);
-    }), this.setPageHash(e), this.setContentHeight(t), i !== c.AllowNone && this.displayTarget(a[0], t);
+      this.ariaManager.AriaHidden(d, !0), this.ariaManager.AriaExpand(d, !1);
+    }), this.setPageHash(e), this.setContentHeight(t), i !== l.AllowNone && this.displayTarget(a[0], t);
   }
   setPageHash(t) {
     if (t.hasAttribute("data-tab-href")) {
@@ -245,7 +256,7 @@ class m {
       const i = this.getTargets(e);
       i.filter(
         (s) => s.getAttribute("aria-hidden") === "true"
-      ).length === i.length && (l.AriaHidden(t, !1), l.AriaExpand(t, !0));
+      ).length === i.length && (this.ariaManager.AriaHidden(t, !1), this.ariaManager.AriaExpand(t, !0));
     }, a);
   }
   getTargets(t) {
@@ -270,5 +281,5 @@ class m {
   }
 }
 export {
-  m as ARIATabManager
+  A as ARIATabManager
 };
