@@ -281,5 +281,5 @@ class A {
   }
 }
 export {
-  A as ARIATabManager
+  A as default
 };

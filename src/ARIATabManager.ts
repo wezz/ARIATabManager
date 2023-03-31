@@ -19,7 +19,7 @@ Example:
 
 using the attribute data-tab-selection-mode="allownone" will allow zero tabs to be open
 */
-import { ARIAManager } from "@wezz/ariamanager";
+import ARIAManager from "@wezz/ariamanager";
 
 class SelectionMode {
   public static AllowNone: string = "allownone";
@@ -35,7 +35,7 @@ export default class ARIATabManager {
   private buttonSelector = "[data-tab-button]";
   private tabModeAttributeName = "data-tab-selection-mode";
   private tabMediaQueryAttributeName = "data-tab-mediaquery";
-  private ariaManager : ARIAManager;
+  private ariaManager : any;
   private defaultDelay = 0;
   constructor(options?: ARIATabManagerInitiationOptions) {
     const constructorOptions = this.parseOptions(options);

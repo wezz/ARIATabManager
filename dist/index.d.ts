@@ -1,1 +1,2 @@
-export { default as ARIATabManager } from './ARIATabManager';
+import ARIATabManager from './ARIATabManager';
+export default ARIATabManager;
