@@ -12,8 +12,8 @@ npm install @wezz/ariatabmanager
 ## Usage
 ### Initialize ARIA Manager & ARIA Tab Manager
 ```
-import { ARIAManager } from "@wezz/ariamanager";
-import { ARIATabManager } from "@wezz/ariatabmanager";
+import ARIAManager from "@wezz/ariamanager";
+import ARIATabManager from "@wezz/ariatabmanager";
 // On document ready
 new ARIAManager();
 new ARIATabManager();
