@@ -48,6 +48,21 @@ There is a additional parameter **data-tab-selection-mode** which will allow use
 
 ```<div data-tab-container data-tab-selection-mode="allownone">...</div>```
 
+## More examples
+See [the example html page](https://github.com/wezz/ARIATabManager/blob/main/index.html) for more examples on how to implement the ARIATabManager
+
+## Related packages
+### ARIAManager
+[ARIAManager](https://github.com/wezz/ARIAManager) is the engine that drives the ARIATabManager. It handles the relationship between ```aria-controls``` elements and their targets.
+
+### [MatchMedia Attribute Manager](https://github.com/wezz/MatchMediaAttributeManager)
+Adding a ```aria-hidden``` attribute and not using it for it's intended use is bad for accessibility.<br>
+Elements can be visually visible but hidden for users using screenreaders and more. 
+
+The MatchMedia Attribute Manager makes it possible to remove or add ```aria-hidden``` depending on a media query.
+
+Use cases can be that you want to show a navigation in desktop, but in mobile it's supposed to be hidden by default and toggled by a button.
+
 
 ## Development & Demo
 Clone this repo
