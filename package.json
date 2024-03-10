@@ -1,6 +1,6 @@
 {
   "name": "@wezz/ariatabmanager",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "type": "module",
   "main": "./dist/ariatabmanager.umd.cjs",
   "module": "./dist/ariatabmanager.js",

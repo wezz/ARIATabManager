@@ -44,9 +44,7 @@ class f {
   }
   GetARIAControllerFromTarget(t) {
     const e = t.getAttribute("id") + "";
-    return e ? this.controlelements.filter(
-      (a) => (a.getAttribute("aria-controls") + "").indexOf(e) !== -1
-    ) : [];
+    return e ? (console.log("this.controlelements", this.controlelements), this.controlelements.filter((a) => (a.getAttribute("aria-controls") + "").split(" ").indexOf(e) !== -1)) : [];
   }
   GetARIAControlTargets(t) {
     const e = (t.getAttribute("aria-controls") + "").split(
@@ -95,7 +93,8 @@ class f {
     );
   }
   updateButtonState(t, e) {
-    const a = (s, d) => s.hasAttribute(d) ? s.getAttribute(d) : null, i = e.detail.target, n = a(i, "aria-hidden");
+    console.log("updateButtonState(elm", t);
+    const a = (s, l) => s.hasAttribute(l) ? s.getAttribute(l) : null, i = e.detail.target, n = a(i, "aria-hidden");
     t.hasAttribute("aria-pressed") && t.setAttribute("aria-pressed", (n === "false") + ""), t.hasAttribute("aria-expanded") && t.setAttribute("aria-expanded", (n === "false") + "");
   }
   setAriaHidden(t) {
@@ -105,7 +104,7 @@ class f {
         target: e,
         value: a
       })
-    ), i.forEach((n) => {
+    ), console.log("relatedControls", e, i), i.forEach((n) => {
       n.dispatchEvent(
         this.customEvent("updateButtonState", {
           target: e
@@ -157,10 +156,10 @@ class f {
     });
   }
 }
-class l {
+class d {
 }
-o(l, "AllowNone", "allownone"), o(l, "TabletAccordion", "tabletaccordion"), o(l, "Default", "");
-class A {
+o(d, "AllowNone", "allownone"), o(d, "TabletAccordion", "tabletaccordion"), o(d, "Default", "");
+class m {
   constructor(t) {
     o(this, "controlelements", []);
     o(this, "controlSelector", "[data-tab-container]");
@@ -214,16 +213,16 @@ class A {
   }
   async onBeforeClick(t, e) {
     const a = await this.ariaManager.GetARIAControlTargets(e), i = t.getAttribute(this.tabModeAttributeName), n = a[0].id;
-    if (i === l.TabletAccordion) {
-      const d = t.hasAttribute(this.tabMediaQueryAttributeName) ? t.getAttribute(this.tabMediaQueryAttributeName) + "" : "only screen and (min-width: 768px)";
-      if (typeof (window == null ? void 0 : window.matchMedia) < "u" && !window.matchMedia(d).matches)
+    if (i === d.TabletAccordion) {
+      const l = t.hasAttribute(this.tabMediaQueryAttributeName) ? t.getAttribute(this.tabMediaQueryAttributeName) + "" : "only screen and (min-width: 768px)";
+      if (typeof (window == null ? void 0 : window.matchMedia) < "u" && !window.matchMedia(l).matches)
         return;
     }
     this.getTargets(t).filter(
-      (d) => d.id !== n
-    ).forEach((d) => {
-      this.ariaManager.AriaHidden(d, !0), this.ariaManager.AriaExpand(d, !1);
-    }), this.setPageHash(e), this.setContentHeight(t), i !== l.AllowNone && this.displayTarget(a[0], t);
+      (l) => l.id !== n
+    ).forEach((l) => {
+      this.ariaManager.AriaHidden(l, !0), this.ariaManager.AriaExpand(l, !1);
+    }), this.setPageHash(e), this.setContentHeight(t), i !== d.AllowNone && this.displayTarget(a[0], t);
   }
   setPageHash(t) {
     if (t.hasAttribute("data-tab-href")) {
@@ -281,5 +280,5 @@ class A {
   }
 }
 export {
-  A as default
+  m as default
 };
