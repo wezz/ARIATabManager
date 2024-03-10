@@ -1,6 +1,6 @@
 # ARIA Tab Manager
 
-This is a Tab Management script that takes advantage of (ARIA Manager)[https://github.com/wezz/ARIAManager]
+This is a Tab Management script that takes advantage of [ARIA Manager](https://github.com/wezz/ARIAManager)
 By adding data attributes to markup it will take care of aria attributes which can e used to style the tabs.
 
 ## Installation

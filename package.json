@@ -43,6 +43,6 @@
     "vite-plugin-dts": "^2.0.2"
   },
   "dependencies": {
-    "@wezz/ariamanager": "^1.0.4"
+    "@wezz/ariamanager": "^1.0.5"
   }
 }
