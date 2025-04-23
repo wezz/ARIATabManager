@@ -1,7 +1,7 @@
 var h = Object.defineProperty;
 var u = (r, t, e) => t in r ? h(r, t, { enumerable: !0, configurable: !0, writable: !0, value: e }) : r[t] = e;
-var o = (r, t, e) => (u(r, typeof t != "symbol" ? t + "" : t, e), e);
-var b = Object.defineProperty, g = (r, t, e) => t in r ? b(r, t, { enumerable: !0, configurable: !0, writable: !0, value: e }) : r[t] = e, c = (r, t, e) => (g(r, typeof t != "symbol" ? t + "" : t, e), e);
+var o = (r, t, e) => u(r, typeof t != "symbol" ? t + "" : t, e);
+var b = Object.defineProperty, g = (r, t, e) => t in r ? b(r, t, { enumerable: !0, configurable: !0, writable: !0, value: e }) : r[t] = e, c = (r, t, e) => g(r, typeof t != "symbol" ? t + "" : t, e);
 class f {
   constructor(t) {
     c(this, "controlelements", []), c(this, "controlselector", "[aria-controls]:not([data-ariamanager-ignore])"), c(this, "delayAttribute", "data-ariamanager-delay");
@@ -78,13 +78,22 @@ class f {
     });
   }
   bindEventsToTargetElements(t) {
-    t.dataset.ariamanager_eventbindings !== "true" && (t.addEventListener("set-aria-hidden", this.setAriaHidden.bind(this)), t.addEventListener(
+    t.dataset.ariamanager_eventbindings !== "true" && (t.addEventListener(
+      "set-aria-hidden",
+      this.setAriaHidden.bind(this)
+    ), t.addEventListener(
       "set-aria-expanded",
       this.setAriaExpanded.bind(this)
     ), t.dataset.ariamanager_eventbindings = "true");
   }
   bindEventsToControlElements(t) {
-    t.addEventListener("click", this.onButtonClick.bind(this, t)), t.addEventListener("beforeClick", this.beforeClickEvent.bind(this, t)), t.addEventListener(
+    t.addEventListener(
+      "click",
+      this.onButtonClick.bind(this, t)
+    ), t.addEventListener(
+      "beforeClick",
+      this.beforeClickEvent.bind(this, t)
+    ), t.addEventListener(
       "adjustTargetStates",
       this.adjustTargetStates.bind(this, t)
     ), t.addEventListener(

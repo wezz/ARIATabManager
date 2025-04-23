@@ -1,3 +1,3 @@
-import ARIATabManager from './ARIATabManager';
+import ARIATabManager from "./ARIATabManager";
 
 new ARIATabManager();
