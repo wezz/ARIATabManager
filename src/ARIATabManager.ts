@@ -22,9 +22,9 @@ using the attribute data-tab-selection-mode="allownone" will allow zero tabs to 
 import ARIAManager from "@wezz/ariamanager";
 
 class SelectionMode {
-  public static AllowNone: string = "allownone";
-  public static TabletAccordion: string = "tabletaccordion";
-  public static Default: string = "";
+  public static AllowNone = "allownone";
+  public static TabletAccordion = "tabletaccordion";
+  public static Default = "";
 }
 
 export default class ARIATabManager {
@@ -35,7 +35,7 @@ export default class ARIATabManager {
   private buttonSelector = "[data-tab-button]";
   private tabModeAttributeName = "data-tab-selection-mode";
   private tabMediaQueryAttributeName = "data-tab-mediaquery";
-  private ariaManager : any;
+  private ariaManager: any;
   private defaultDelay = 0;
   constructor(options?: ARIATabManagerInitiationOptions) {
     const constructorOptions = this.parseOptions(options);
@@ -43,29 +43,34 @@ export default class ARIATabManager {
     if (constructorOptions.initiateElements) {
       this.InitiateElements(constructorOptions.parent);
     }
-    
+
     this.checkPageHash();
   }
   private parseOptions(options?: ARIATabManagerInitiationOptions) {
     const defaultOptions = { parent: document.body, initiateElements: true };
-    if (!options || typeof options !== "object" || (typeof options.parent === "undefined" && typeof options.initiateElements === "undefined")) {
+    if (
+      !options ||
+      typeof options !== "object" ||
+      (typeof options.parent === "undefined" &&
+        typeof options.initiateElements === "undefined")
+    ) {
       return defaultOptions;
     }
-    return {...defaultOptions, ...options};
+    return { ...defaultOptions, ...options };
   }
 
-  public InitiateElements(parent : HTMLElement = document.body) {
+  public InitiateElements(parent: HTMLElement = document.body) {
     const controlElements = [].slice.call(
-      parent.querySelectorAll(this.controlSelector)
+      parent.querySelectorAll(this.controlSelector),
     ) as HTMLElement[];
     const newElements = controlElements.filter(
-      (elm) => elm.dataset.tabmanager !== "activated"
+      (elm) => elm.dataset.tabmanager !== "activated",
     );
     newElements.forEach(this.initiateElement.bind(this));
     newElements.forEach((elm) => (elm.dataset.tabmanager = "activated"));
     this.controlelements = ([] as HTMLElement[]).concat(
       this.controlelements,
-      newElements
+      newElements,
     );
   }
 
@@ -100,7 +105,7 @@ export default class ARIATabManager {
     buttons.forEach((button) => {
       button.addEventListener(
         "beforeClick",
-        this.onBeforeClick.bind(this, elm, button)
+        this.onBeforeClick.bind(this, elm, button),
       );
     });
   }
@@ -110,7 +115,9 @@ export default class ARIATabManager {
     const tabMode = parent.getAttribute(this.tabModeAttributeName);
     const targetId = buttonTargets[0].id;
     if (tabMode === SelectionMode.TabletAccordion) {
-      const mediaQuery = (parent.hasAttribute(this.tabMediaQueryAttributeName)) ? (parent.getAttribute(this.tabMediaQueryAttributeName)+'') : 'only screen and (min-width: 768px)';
+      const mediaQuery = parent.hasAttribute(this.tabMediaQueryAttributeName)
+        ? parent.getAttribute(this.tabMediaQueryAttributeName) + ""
+        : "only screen and (min-width: 768px)";
       if (typeof window?.matchMedia !== "undefined") {
         if (!window.matchMedia(mediaQuery).matches) {
           // If the media query matches we will not add the behavior for tabbing.
@@ -119,12 +126,10 @@ export default class ARIATabManager {
           return;
         }
       }
-      
     }
-    
 
     const siblings = this.getTargets(parent).filter(
-      (sibling: HTMLElement) => sibling.id !== targetId
+      (sibling: HTMLElement) => sibling.id !== targetId,
     ) as HTMLElement[];
 
     siblings.forEach((sibling) => {
@@ -161,7 +166,7 @@ export default class ARIATabManager {
     }
     hashArray.forEach((hash) => {
       const buttons = Array.from(
-        document.querySelectorAll('[data-tab-href="' + hash + '"]')
+        document.querySelectorAll('[data-tab-href="' + hash + '"]'),
       );
       if (buttons && buttons.length > 0) {
         buttons.forEach((button) => {
@@ -183,19 +188,19 @@ export default class ARIATabManager {
     }
     if (parent.matches("body")) {
       return null;
-    }; // when parent is a tag 'body' -> parent not found
+    } // when parent is a tag 'body' -> parent not found
     return parent;
   }
 
   private displayTarget(
     buttonTarget: HTMLElement,
     parent: HTMLElement,
-    delayInMilliseconds: number = 180
+    delayInMilliseconds = 180,
   ) {
     window.setTimeout(() => {
       const targets = this.getTargets(parent);
       const hiddenTargets = targets.filter(
-        (target: HTMLElement) => target.getAttribute("aria-hidden") === "true"
+        (target: HTMLElement) => target.getAttribute("aria-hidden") === "true",
       ) as HTMLElement[];
       if (hiddenTargets.length === targets.length) {
         this.ariaManager.AriaHidden(buttonTarget, false);
@@ -216,7 +221,7 @@ export default class ARIATabManager {
     if (contentContainer && elm.getAttribute("data-tab-setheight") === "true") {
       const targets = this.getTargets(elm);
       let largestheight = 0;
-      console.log('targets', targets)
+      console.log("targets", targets);
       targets.forEach((target: Element) => {
         const targetRect = target.getClientRects()[0];
         if (targetRect && targetRect.height > largestheight) {
@@ -233,5 +238,5 @@ export default class ARIATabManager {
 
 interface ARIATabManagerInitiationOptions {
   parent?: HTMLElement;
-  initiateElements?: Boolean;
+  initiateElements?: boolean;
 }
