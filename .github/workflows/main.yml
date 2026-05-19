@@ -6,7 +6,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        node-version: [16.x]
+        node-version: [22.x]
         os: [ubuntu-latest]
     steps:
       - uses: actions/checkout@v1
@@ -17,5 +17,6 @@ jobs:
       - name: npm install, build
         run: |
           npm install
+          npm run build
         env:
           CI: true
