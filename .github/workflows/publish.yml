@@ -8,6 +8,8 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
     steps:
       - uses: actions/checkout@v1
       - uses: actions/setup-node@v1
@@ -40,5 +42,3 @@ jobs:
 
       - name: npm publish
         run: npm publish --access public
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.NODE_AUTH_TOKEN}}
