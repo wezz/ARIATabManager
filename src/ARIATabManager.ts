@@ -1,4 +1,4 @@
-﻿// import { forEachChild } from "typescript";
+// import { forEachChild } from "typescript";
 
 /*
 This script will listen to the states of WAI-ARIA buttons and makes sure that only one tab is open by default.

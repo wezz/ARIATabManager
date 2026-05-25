@@ -1,14 +1,15 @@
 {
   "name": "@wezz/ariatabmanager",
-  "version": "1.0.7",
+  "version": "1.0.6",
   "type": "module",
   "main": "./dist/index.umd.cjs",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/index.js",
-      "require": "./dist/index.umd.cjs"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/ariatabmanager.js",
+      "require": "./dist/ariatabmanager.umd.cjs"
     }
   },
   "files": [
@@ -25,7 +26,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/wezz/ARIATabManager"
+    "url": "git+https://github.com/wezz/ARIATabManager.git"
   },
   "author": "Wezz Balk <github@wezz.se> (https://github.com/wezz)",
   "license": "MIT",
@@ -39,16 +40,12 @@
     "accessibility"
   ],
   "devDependencies": {
-    "@eslint/js": "~9.25.1",
-    "@types/node": "~22.14.1",
-    "eslint": "~9.25.1",
-    "prettier": "~3.5.3",
-    "typescript": "~5.8.3",
-    "typescript-eslint": "~8.31.0",
-    "vite": "~6.3.2",
-    "vite-plugin-dts": "~4.5.3"
+    "@types/node": "^22.14.1",
+    "typescript": "^5.8.3",
+    "vite": "^6.4.2",
+    "vite-plugin-dts": "^4.5.3"
   },
   "dependencies": {
-    "@wezz/ariamanager": "~1.0.8"
+    "@wezz/ariamanager": "~1.0.9"
   }
 }

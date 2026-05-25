@@ -4,42 +4,38 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
   publish:
+    if: "!contains(github.event.head_commit.message, 'chore: release')"
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
     steps:
-      - uses: actions/checkout@v1
-      - uses: actions/setup-node@v1
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: 20
-      - run: npm install
-      - run: npm run build
+          node-version: 24
+          registry-url: 'https://registry.npmjs.org'
 
-      - name: Setup GIT
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Setup git
         run: |
-          git reset --hard
-          git config --local --list
-          git checkout main
-          git config user.email "wezz@wezz.se"
+          git config user.email "1185533+wezz@users.noreply.github.com"
           git config user.name "Wezz Balk"
-        env:
-          GH_EMAIL: ${{secrets.GH_EMAIL}}
 
-      - name: Bump version
+      - name: Bump version, build and push
         run: |
-          git reset --hard
+          git checkout -- .
           npm version patch
           npm run build
-          git add . || true
-          git commit -m "Build update" || true
-          git push "https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY"
-        env:
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          git add .
+          git commit -m "chore: release" || true
+          git push --follow-tags
 
-      - name: npm publish
-        run: |
-          npm config set //registry.npmjs.org/:_authToken=$NODE_AUTH_TOKEN
-          npm publish --access public
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.NODE_AUTH_TOKEN}}
+      - name: Publish to npm
+        run: npm publish --provenance --access public
