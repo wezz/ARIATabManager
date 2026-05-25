@@ -25,6 +25,6 @@ export default class ARIATabManager {
 }
 interface ARIATabManagerInitiationOptions {
     parent?: HTMLElement;
-    initiateElements?: Boolean;
+    initiateElements?: boolean;
 }
 export {};
