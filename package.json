@@ -1,6 +1,6 @@
 {
   "name": "@wezz/ariatabmanager",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "type": "module",
   "main": "./dist/ariatabmanager.umd.cjs",
   "module": "./dist/ariatabmanager.js",
@@ -24,7 +24,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/wezz/ARIATabManager"
+    "url": "git+https://github.com/wezz/ARIATabManager.git"
   },
   "author": "Wezz Balk <github@wezz.se> (https://github.com/wezz)",
   "license": "MIT",
