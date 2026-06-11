@@ -6,12 +6,17 @@ declare class ARIATabManager {
     private buttonSelector;
     private tabModeAttributeName;
     private tabMediaQueryAttributeName;
+    private delayAttribute;
+    private hideStrategyAttribute;
+    private resizeObservers;
     private ariaManager;
     private defaultDelay;
     constructor(options?: ARIATabManagerInitiationOptions);
     private parseOptions;
     InitiateElements(parent?: HTMLElement): void;
     private initiateElement;
+    private applyHideStrategy;
+    private observeContentHeight;
     private setDefaultDelay;
     private bindEvents;
     private onBeforeClick;
@@ -21,6 +26,7 @@ declare class ARIATabManager {
     private displayTarget;
     private getTargets;
     private getButtons;
+    private getConfiguredDelay;
     private setContentHeight;
 }
 export default ARIATabManager;

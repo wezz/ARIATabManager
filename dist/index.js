@@ -1,21 +1,26 @@
-var h = Object.defineProperty;
-var d = (s, t, e) => t in s ? h(s, t, { enumerable: !0, configurable: !0, writable: !0, value: e }) : s[t] = e;
-var n = (s, t, e) => d(s, typeof t != "symbol" ? t + "" : t, e);
+var l = Object.defineProperty;
+var d = (s, t, e) => t in s ? l(s, t, { enumerable: !0, configurable: !0, writable: !0, value: e }) : s[t] = e;
+var r = (s, t, e) => d(s, typeof t != "symbol" ? t + "" : t, e);
 import u from "@wezz/ariamanager";
-class l {
+class c {
 }
-n(l, "AllowNone", "allownone"), n(l, "TabletAccordion", "tabletaccordion"), n(l, "Default", "");
+r(c, "AllowNone", "allownone"), r(c, "TabletAccordion", "tabletaccordion"), r(c, "Default", "");
 class g {
   constructor(t) {
-    n(this, "controlelements", []);
-    n(this, "controlSelector", "[data-tab-container]");
-    n(this, "contentSelector", "[data-tab-content]");
-    n(this, "contentContainerSelector", "[data-tab-contentcontainer]");
-    n(this, "buttonSelector", "[data-tab-button]");
-    n(this, "tabModeAttributeName", "data-tab-selection-mode");
-    n(this, "tabMediaQueryAttributeName", "data-tab-mediaquery");
-    n(this, "ariaManager");
-    n(this, "defaultDelay", 0);
+    r(this, "controlelements", []);
+    r(this, "controlSelector", "[data-tab-container]");
+    r(this, "contentSelector", "[data-tab-content]");
+    r(this, "contentContainerSelector", "[data-tab-contentcontainer]");
+    r(this, "buttonSelector", "[data-tab-button]");
+    r(this, "tabModeAttributeName", "data-tab-selection-mode");
+    r(this, "tabMediaQueryAttributeName", "data-tab-mediaquery");
+    r(this, "delayAttribute", "data-tab-delay");
+    r(this, "hideStrategyAttribute", "data-ariamanager-hide");
+    r(this, "resizeObservers", []);
+    r(this, "ariaManager");
+    r(this, "defaultDelay", 0);
+    if (typeof document > "u")
+      return;
     const e = this.parseOptions(t);
     this.ariaManager = new u(t), e.initiateElements && this.InitiateElements(e.parent), this.checkPageHash();
   }
@@ -24,51 +29,77 @@ class g {
     return !t || typeof t != "object" || typeof t.parent > "u" && typeof t.initiateElements > "u" ? e : { ...e, ...t };
   }
   InitiateElements(t = document.body) {
-    const i = [].slice.call(
+    const a = [].slice.call(
       t.querySelectorAll(this.controlSelector)
     ).filter(
-      (a) => a.dataset.tabmanager !== "activated"
+      (i) => i.dataset.tabmanager !== "activated"
     );
-    i.forEach(this.initiateElement.bind(this)), i.forEach((a) => a.dataset.tabmanager = "activated"), this.controlelements = [].concat(
+    a.forEach(this.initiateElement.bind(this)), a.forEach((i) => i.dataset.tabmanager = "activated"), this.controlelements = [].concat(
       this.controlelements,
-      i
+      a
     );
   }
   initiateElement(t) {
-    this.setDefaultDelay(t), t.getAttribute("data-tab-setheight") === "true" && (this.setContentHeight(t), window.setInterval(() => {
-      this.setContentHeight(t);
-    }, 1e3)), this.bindEvents(t);
+    this.setDefaultDelay(t), this.applyHideStrategy(t), t.getAttribute("data-tab-setheight") === "true" && (this.setContentHeight(t), this.observeContentHeight(t)), this.bindEvents(t);
   }
-  setDefaultDelay(t) {
-    const e = t.getAttribute(this.controlSelector);
-    let i = this.defaultDelay;
-    if (typeof e == "string" && e.length > 0) {
-      const a = parseInt(e, 10);
-      isNaN(a) || (i = a);
-    }
-    t.dataset.tabanimationdelay = i + "";
-  }
-  bindEvents(t) {
-    const e = t;
-    this.getButtons(e).forEach((a) => {
-      a.addEventListener(
-        "beforeClick",
-        this.onBeforeClick.bind(this, e, a)
+  // A hidden tab panel must leave the tab order, otherwise keyboard users tab
+  // into off-screen controls. aria-hidden alone does not do this, so we ask the
+  // underlying ARIAManager to also toggle `inert` (requires @wezz/ariamanager
+  // >= 1.1). Opt out per panel by pre-setting data-ariamanager-hide yourself
+  // (e.g. "hidden" or "none"); we only set a default when none is present, and
+  // we sync the initial inert state to the panel's current aria-hidden value.
+  applyHideStrategy(t) {
+    this.getTargets(t).forEach((e) => {
+      e.hasAttribute(this.hideStrategyAttribute) || e.setAttribute(this.hideStrategyAttribute, "inert"), e.getAttribute(this.hideStrategyAttribute) === "inert" && e.toggleAttribute(
+        "inert",
+        e.getAttribute("aria-hidden") === "true"
       );
     });
   }
-  async onBeforeClick(t, e) {
-    const i = await this.ariaManager.GetARIAControlTargets(e), a = t.getAttribute(this.tabModeAttributeName), r = i[0].id;
-    if (a === l.TabletAccordion) {
-      const c = t.hasAttribute(this.tabMediaQueryAttributeName) ? t.getAttribute(this.tabMediaQueryAttributeName) + "" : "only screen and (min-width: 768px)";
-      if (typeof (window == null ? void 0 : window.matchMedia) < "u" && !window.matchMedia(c).matches)
+  // Keep the content container tall enough for its largest panel. A
+  // ResizeObserver fires only when a panel actually changes size, replacing the
+  // old 1s polling interval that ran forever and stacked on re-initialisation.
+  observeContentHeight(t) {
+    if (typeof ResizeObserver > "u")
+      return;
+    const e = new ResizeObserver(() => this.setContentHeight(t));
+    this.getTargets(t).forEach(
+      (a) => e.observe(a)
+    ), this.resizeObservers.push(e);
+  }
+  setDefaultDelay(t) {
+    const e = t.getAttribute(this.delayAttribute);
+    let a = this.defaultDelay;
+    if (typeof e == "string" && e.length > 0) {
+      const i = parseInt(e, 10);
+      isNaN(i) || (a = i);
+    }
+    t.dataset.tabanimationdelay = a + "";
+  }
+  bindEvents(t) {
+    const e = t;
+    this.getButtons(e).forEach((i) => {
+      i.addEventListener(
+        "beforeClick",
+        this.onBeforeClick.bind(this, e, i)
+      );
+    });
+  }
+  onBeforeClick(t, e) {
+    const a = this.ariaManager.GetARIAControlTargets(e);
+    if (a.length === 0)
+      return;
+    const i = t.getAttribute(this.tabModeAttributeName), n = a[0].id;
+    if (i === c.TabletAccordion) {
+      const h = t.hasAttribute(this.tabMediaQueryAttributeName) ? t.getAttribute(this.tabMediaQueryAttributeName) + "" : "only screen and (min-width: 768px)";
+      if (typeof (window == null ? void 0 : window.matchMedia) < "u" && !window.matchMedia(h).matches)
         return;
     }
     this.getTargets(t).filter(
-      (c) => c.id !== r
-    ).forEach((c) => {
-      this.ariaManager.AriaHidden(c, !0), this.ariaManager.AriaExpand(c, !1);
-    }), this.setPageHash(e), this.setContentHeight(t), a !== l.AllowNone && this.displayTarget(i[0], t);
+      (h) => h.id !== n
+    ).forEach((h) => {
+      this.ariaManager.AriaHidden(h, !0), this.ariaManager.AriaExpand(h, !1);
+    }), this.setPageHash(e), this.setContentHeight(t), i !== c.AllowNone && this.displayTarget(a[0], t);
   }
   setPageHash(t) {
     if (t.hasAttribute("data-tab-href")) {
@@ -81,28 +112,28 @@ class g {
   checkPageHash() {
     const t = (window.location.hash + "").split(",").filter((e) => e);
     t.length !== 0 && t.forEach((e) => {
-      const i = Array.from(
+      const a = Array.from(
         document.querySelectorAll('[data-tab-href="' + e + '"]')
       );
-      i && i.length > 0 && i.forEach((a) => {
-        const r = this.getTabContainer(a);
-        r && this.onBeforeClick(r, a);
+      a && a.length > 0 && a.forEach((i) => {
+        const n = this.getTabContainer(i);
+        n && this.onBeforeClick(n, i);
       });
     });
   }
   getTabContainer(t) {
     let e = t.parentNode;
-    for (; !(e.matches("body") || e.hasAttribute("data-tab-container")); )
+    for (; e && typeof e.matches == "function" && !(e.matches("body") || e.hasAttribute("data-tab-container")); )
       e = e.parentNode;
-    return e.matches("body") ? null : e;
+    return !e || e.matches("body") ? null : e;
   }
-  displayTarget(t, e, i = 180) {
+  displayTarget(t, e, a = this.getConfiguredDelay(e, 180)) {
     window.setTimeout(() => {
-      const a = this.getTargets(e);
-      a.filter(
+      const i = this.getTargets(e);
+      i.filter(
         (o) => o.getAttribute("aria-hidden") === "true"
-      ).length === a.length && (this.ariaManager.AriaHidden(t, !1), this.ariaManager.AriaExpand(t, !0));
-    }, i);
+      ).length === i.length && (this.ariaManager.AriaHidden(t, !1), this.ariaManager.AriaExpand(t, !0));
+    }, a);
   }
   getTargets(t) {
     return [].slice.call(t.querySelectorAll(this.contentSelector));
@@ -110,17 +141,23 @@ class g {
   getButtons(t) {
     return [].slice.call(t.querySelectorAll(this.buttonSelector));
   }
+  // The per-container delay parsed by setDefaultDelay (from data-tab-delay),
+  // falling back to the supplied default when none was configured.
+  getConfiguredDelay(t, e) {
+    const a = parseInt(t.dataset.tabanimationdelay ?? "", 10);
+    return isNaN(a) || a <= 0 ? e : a;
+  }
   setContentHeight(t) {
     const e = t.querySelector(this.contentContainerSelector);
     if (e && t.getAttribute("data-tab-setheight") === "true") {
-      const i = this.getTargets(t);
-      let a = 0;
-      if (console.log("targets", i), i.forEach((r) => {
-        const o = r.getClientRects()[0];
-        o && o.height > a && (a = o.height);
-      }), a > 0) {
-        const r = "height:" + a + "px";
-        e.setAttribute("style", r);
+      const a = this.getTargets(t);
+      let i = 0;
+      if (a.forEach((n) => {
+        const o = n.getClientRects()[0];
+        o && o.height > i && (i = o.height);
+      }), i > 0) {
+        const n = "height:" + i + "px";
+        e.setAttribute("style", n);
       }
     }
   }

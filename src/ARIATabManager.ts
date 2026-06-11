@@ -1,5 +1,3 @@
-// import { forEachChild } from "typescript";
-
 /*
 This script will listen to the states of WAI-ARIA buttons and makes sure that only one tab is open by default.
 This is mostly used for toggling section visibility
@@ -35,9 +33,17 @@ export default class ARIATabManager {
   private buttonSelector = "[data-tab-button]";
   private tabModeAttributeName = "data-tab-selection-mode";
   private tabMediaQueryAttributeName = "data-tab-mediaquery";
-  private ariaManager: any;
+  private delayAttribute = "data-tab-delay";
+  private hideStrategyAttribute = "data-ariamanager-hide";
+  private resizeObservers: ResizeObserver[] = [];
+  private ariaManager!: ARIAManager;
   private defaultDelay = 0;
   constructor(options?: ARIATabManagerInitiationOptions) {
+    if (typeof document === "undefined") {
+      // No DOM (e.g. server-side rendering): do nothing. The first real
+      // client-side construction will wire everything up.
+      return;
+    }
     const constructorOptions = this.parseOptions(options);
     this.ariaManager = new ARIAManager(options);
     if (constructorOptions.initiateElements) {
@@ -76,17 +82,50 @@ export default class ARIATabManager {
 
   private initiateElement(orgelm: HTMLElement) {
     this.setDefaultDelay(orgelm);
+    this.applyHideStrategy(orgelm);
     if (orgelm.getAttribute("data-tab-setheight") === "true") {
       this.setContentHeight(orgelm);
-      window.setInterval(() => {
-        this.setContentHeight(orgelm);
-      }, 1000);
+      this.observeContentHeight(orgelm);
     }
     this.bindEvents(orgelm);
   }
 
+  // A hidden tab panel must leave the tab order, otherwise keyboard users tab
+  // into off-screen controls. aria-hidden alone does not do this, so we ask the
+  // underlying ARIAManager to also toggle `inert` (requires @wezz/ariamanager
+  // >= 1.1). Opt out per panel by pre-setting data-ariamanager-hide yourself
+  // (e.g. "hidden" or "none"); we only set a default when none is present, and
+  // we sync the initial inert state to the panel's current aria-hidden value.
+  private applyHideStrategy(parent: HTMLElement) {
+    this.getTargets(parent).forEach((target: HTMLElement) => {
+      if (!target.hasAttribute(this.hideStrategyAttribute)) {
+        target.setAttribute(this.hideStrategyAttribute, "inert");
+      }
+      if (target.getAttribute(this.hideStrategyAttribute) === "inert") {
+        target.toggleAttribute(
+          "inert",
+          target.getAttribute("aria-hidden") === "true",
+        );
+      }
+    });
+  }
+
+  // Keep the content container tall enough for its largest panel. A
+  // ResizeObserver fires only when a panel actually changes size, replacing the
+  // old 1s polling interval that ran forever and stacked on re-initialisation.
+  private observeContentHeight(orgelm: HTMLElement) {
+    if (typeof ResizeObserver === "undefined") {
+      return;
+    }
+    const observer = new ResizeObserver(() => this.setContentHeight(orgelm));
+    this.getTargets(orgelm).forEach((target: HTMLElement) =>
+      observer.observe(target),
+    );
+    this.resizeObservers.push(observer);
+  }
+
   private setDefaultDelay(orgelm: HTMLElement) {
-    const attributeValue = orgelm.getAttribute(this.controlSelector);
+    const attributeValue = orgelm.getAttribute(this.delayAttribute);
     let delayValue = this.defaultDelay;
 
     if (typeof attributeValue === "string" && attributeValue.length > 0) {
@@ -110,8 +149,12 @@ export default class ARIATabManager {
     });
   }
 
-  private async onBeforeClick(parent: HTMLElement, button: HTMLElement) {
-    const buttonTargets = await this.ariaManager.GetARIAControlTargets(button);
+  private onBeforeClick(parent: HTMLElement, button: HTMLElement) {
+    const buttonTargets = this.ariaManager.GetARIAControlTargets(button);
+    if (buttonTargets.length === 0) {
+      // Button controls nothing resolvable — nothing to toggle.
+      return;
+    }
     const tabMode = parent.getAttribute(this.tabModeAttributeName);
     const targetId = buttonTargets[0].id;
     if (tabMode === SelectionMode.TabletAccordion) {
@@ -180,22 +223,22 @@ export default class ARIATabManager {
   }
 
   private getTabContainer(button: HTMLElement) {
-    let parent = button.parentNode as HTMLElement;
-    while (true) {
+    let parent = button.parentNode as HTMLElement | null;
+    while (parent && typeof parent.matches === "function") {
       if (parent.matches("body")) break;
       if (parent.hasAttribute("data-tab-container")) break;
-      parent = parent.parentNode as HTMLElement; // get upper parent and check again
+      parent = parent.parentNode as HTMLElement | null; // climb and check again
     }
-    if (parent.matches("body")) {
+    if (!parent || parent.matches("body")) {
       return null;
-    } // when parent is a tag 'body' -> parent not found
+    } // reached the body or a detached node -> container not found
     return parent;
   }
 
   private displayTarget(
     buttonTarget: HTMLElement,
     parent: HTMLElement,
-    delayInMilliseconds = 180,
+    delayInMilliseconds = this.getConfiguredDelay(parent, 180),
   ) {
     window.setTimeout(() => {
       const targets = this.getTargets(parent);
@@ -216,12 +259,18 @@ export default class ARIATabManager {
     return [].slice.call(elm.querySelectorAll(this.buttonSelector));
   }
 
+  // The per-container delay parsed by setDefaultDelay (from data-tab-delay),
+  // falling back to the supplied default when none was configured.
+  private getConfiguredDelay(parent: HTMLElement, fallback: number) {
+    const configured = parseInt(parent.dataset.tabanimationdelay ?? "", 10);
+    return isNaN(configured) || configured <= 0 ? fallback : configured;
+  }
+
   private setContentHeight(elm: Element) {
     const contentContainer = elm.querySelector(this.contentContainerSelector);
     if (contentContainer && elm.getAttribute("data-tab-setheight") === "true") {
       const targets = this.getTargets(elm);
       let largestheight = 0;
-      console.log("targets", targets);
       targets.forEach((target: Element) => {
         const targetRect = target.getClientRects()[0];
         if (targetRect && targetRect.height > largestheight) {
