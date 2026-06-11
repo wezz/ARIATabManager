@@ -11,6 +11,16 @@ export default defineConfig({
       name: "ariatabmanager",
       fileName: "index",
     },
+    rollupOptions: {
+      // Don't bundle the peer dependency; consumers provide it so a single
+      // shared ARIAManager is used and its fixes propagate without rebuilding.
+      external: [/^@wezz\/ariamanager/],
+      output: {
+        globals: {
+          "@wezz/ariamanager": "ARIAManager",
+        },
+      },
+    },
   },
   plugins: [
     dts({
